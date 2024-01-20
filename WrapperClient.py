@@ -17,7 +17,7 @@ class WrapperClient:
         dates = [date for date in dates if start_datetime <= dt.strptime(str(date), self.date_format) <= end_datetime]
         return (start, end, dates)
     
-    def get_underlying_over_time(self, root: str, security_type: str, points, dates: list[str]):
+    def get_underlying_over_time(self, root: str, security_type: Security, points, dates: list[str]):
         num_days = len(dates)
         prices = {}
         for point in points:
@@ -45,7 +45,7 @@ class WrapperClient:
         data_points = {}
         valid_strikes = []
         for i in range(num_strikes):
-            eod_prices = self.thetadata.get_eod_prices(root=root, security_type=Security.OPTION, start_date=start, end_date=end, exp=exp, strike=strikes[i], right=right)
+            eod_prices = self.thetadata.get_hist_quotes(root=root, start_date=start, end_date=end, exp=exp, strike=strikes[i], right=right)
             header = eod_prices["header"]
             if header["error_type"] != "null":
                 continue
@@ -70,7 +70,7 @@ class WrapperClient:
     def get_greeks_chains_over_time(self, root: str, exp: str, points: list[str], start_date: str=None, end_date: str=None):
         start, end, dates = self.get_dates_in_range(root=root, exp=exp, start_date=start_date, end_date=end_date)
         num_days = len(dates)
-        eod_greeks = self.thetadata.get_eod_greeks(root=root, start_date=start, end_date=end, exp=exp)
+        eod_greeks = cached_eod_greeks #self.thetadata.get_eod_greeks(root=root, start_date=start, end_date=end, exp=exp)
         header = eod_greeks["header"]
         response = eod_greeks["response"]
         data_points = {}

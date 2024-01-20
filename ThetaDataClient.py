@@ -75,6 +75,7 @@ class ThetaDataAPI:
         elif security_type == Security.OPTION:
             url = f'{self.base_url}hist/{security_type.value}/eod?root={root}&start_date={start_date}&end_date={end_date}&strike={strike}&exp={exp}&right={right.value}'
         headers = {'Accept': 'application/json'}
+        print(url)
         return self._get_req(url=url, headers=headers)
 
     def get_hist_quotes(self, root: str, start_date: str, end_date: str, exp: str, strike: str, right: Right, ivl: str=None):

@@ -11,6 +11,13 @@ from ThetaDataClient import Right
 
 class Model:
     def __init__(self, root: str, start_date: dt.date):
+        """
+        Initializes KDE model for options pricing
+
+        Arguments:
+        root: ticker for security
+        start_date: lookback period for model
+        """
         price = pdr.get_data_yahoo([root], start_date, dt.date.today())['Adj Close']
         daily_returns = np.log(price/price.shift(1))
         self.kde = self.generate_kde(daily_returns)
@@ -58,7 +65,7 @@ class Model:
         """
         if right == Right.CALL:
             theo = self.call_theo(strike=strike, spot=spot)
-            return (theo > ask) - (theo < bid)
+            return int(theo > ask) - int(theo < bid)
         else:
             theo = self.put_theo(strike=strike, spot=spot)
-            return (theo > ask) - (theo < bid)
+            return int(theo > ask) - int(theo < bid)
